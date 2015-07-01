@@ -1,6 +1,7 @@
     function updateSlider(slideAmount) {
         var sliderDiv = document.getElementById("sliderSelectedDate");
         sliderDiv.innerHTML = slideAmtToDate(slideAmount);
+        showLocations(slideAmount)
     }
 
     function slideAmtToDate(slideAmount) {
@@ -31,4 +32,61 @@
     	}
 
     	return month +  " " + day;
+    }
+
+    markers = []
+    function showLocations(day_id) {
+        var teams = day_id_to_home_teams[day_id]
+        
+        deleteMarkers()
+        
+        if (teams == undefined) {
+            return
+        }
+        for (var i = 0; i < teams.length; i++) {
+            putTeamOnMap(team_to_loc[teams[i]])
+        }
+    }
+
+
+
+    function putTeamOnMap(loc) {
+        var lat = loc[0]
+        var lng = loc[1]
+
+        var latLng = new google.maps.LatLng(lat, lng);
+
+        addMarker(latLng)
+    }
+
+    // Add a marker to the map and push to the array.
+    function addMarker(location) {
+      var marker = new google.maps.Marker({
+        position: location,
+        map: map
+      });
+      markers.push(marker);
+    }
+
+    // Sets the map on all markers in the array.
+    function setAllMap() {
+      for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap();
+      }
+    }
+
+    // Removes the markers from the map, but keeps them in the array.
+    function clearMarkers() {
+      setAllMap(null);
+    }
+
+    // Shows any markers currently in the array.
+    function showMarkers() {
+      setAllMap(map);
+    }
+
+    // Deletes all markers in the array by removing references to them.
+    function deleteMarkers() {
+      clearMarkers();
+      markers = [];
     }
