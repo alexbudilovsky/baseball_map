@@ -1,4 +1,17 @@
-    function updateSlider(slideAmount) {
+    // add proototype for day of year
+    Date.prototype.getDOY = function() {
+        var onejan = new Date(this.getFullYear(),0,1);
+        return Math.ceil((this - onejan) / 86400000);
+    }
+
+    function setSliderToCurrentDay() {
+        var dayOfBaseballYear = getCurrentDayOfBaseballYear();
+
+        document.getElementById("calendarDaySlider").value = dayOfBaseballYear;
+        updateSliderTextDiv(dayOfBaseballYear);
+    }
+
+    function updateSliderTextDiv(slideAmount) {
         var sliderDiv = document.getElementById("sliderSelectedDate");
         sliderDiv.innerHTML = slideAmtToDate(slideAmount);
         showLocations(slideAmount)
@@ -42,6 +55,22 @@
 
         return days[array_idx]
     }
+
+    // returns number 1-183, or beginning/end if outside of year
+    function getCurrentDayOfBaseballYear() {
+        var baseballDayOfYear = new Date().getDOY() - 94; //94 - April 4th (need to subtract offset)
+        if (baseballDayOfYear < 1) {
+            return 1;
+        } else if (baseballDayOfYear > 188) {
+            return 188; 
+        } else {
+            return baseballDayOfYear
+        }
+    }
+
+    ////////////////////////////////
+    // Google Map Functions Below //
+    ////////////////////////////////
 
     markers = []
     function showLocations(day_id) {
