@@ -31,7 +31,16 @@
     		day -= 183 ;
     	}
 
-    	return month +  " " + day;
+    	return dayOfMLBYearToDayOfWeek(slideAmount) + ", " + month +  " " + day;
+    }
+
+    // day1 = Sunday (April 5, 2015)
+    function dayOfMLBYearToDayOfWeek(day_id) {
+        var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+        var array_idx = (day_id - 1) % 7;
+
+        return days[array_idx]
     }
 
     markers = []
@@ -44,7 +53,7 @@
             return
         }
         for (var i = 0; i < teams.length; i++) {
-            putTeamOnMap(team_to_loc[teams[i]])
+            putTeamOnMap(team_to_loc[teams[i]]) 
         }
     }
 
