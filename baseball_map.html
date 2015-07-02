@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+    <style type="text/css">
+      html, body, #map-canvas { margin: 0; padding: 0;}
+    </style>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?">
+    </script>
+    <script type="text/javascript"
+      src="schedule_arrays.js">
+    </script>
+    <script type="text/javascript">
+        var latLng = new google.maps.LatLng(39.5, -98.35);
+        var mapOptions = {
+          center: latLng,
+          zoom: 5
+        };
+        var map
+      function initialize() {
+
+        map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+    <script type="text/javascript"
+      src="sliderEvent.js">
+    </script>
+  </head>
+  <body onload="setSliderToCurrentDay()">
+  	<h1>MLB Ballparks Hosting Games</h1>
+	<div id="map-canvas"></div>
+	<br>
+	Calendar Day:
+	<input type="range" style="width:500px" id = "calendarDaySlider" min="1" max="183" value="1"
+	oninput="updateSliderTextDiv(this.value)"/>
+	<div id="sliderSelectedDate"></div>
+  </body>
+</html>
