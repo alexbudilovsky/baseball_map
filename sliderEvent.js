@@ -9,6 +9,7 @@
 
         document.getElementById("calendarDaySlider").value = dayOfBaseballYear;
         updateSliderTextDiv(dayOfBaseballYear);
+        loadMarkerLabels();
     }
 
     function updateSliderTextDiv(slideAmount) {
@@ -73,6 +74,7 @@
     ////////////////////////////////
 
     markers = []
+    infowindows = []
     function showLocations(day_id) {
         var teams = day_id_to_home_teams[day_id]
         
@@ -82,34 +84,61 @@
             return
         }
         for (var i = 0; i < teams.length; i++) {
-            putTeamOnMap(team_to_loc[teams[i]]) 
+            putTeamOnMap(teams[i]) 
         }
     }
 
+    // called when releasing the slider so that client is not loading ALL labels on sliding (very slow)
+    function loadMarkerLabels() {
+        for (var i = 0; i < markers.length; i++) {
+
+            var infowindow = new google.maps.InfoWindow({
+                content: markers[i].getTitle()
+            });
+
+            google.maps.event.addListener(markers[i], 'click', function() {
+                infowindow.open(map,markers[i]);
+            });
+        }
+
+    }
 
 
-    function putTeamOnMap(loc) {
+    function putTeamOnMap(team) {
+        var loc = team_to_loc[team]
+
         var lat = loc[0]
         var lng = loc[1]
 
         var latLng = new google.maps.LatLng(lat, lng);
 
-        addMarker(latLng)
+        addMarker(latLng, team)
     }
 
     // Add a marker to the map and push to the array.
-    function addMarker(location) {
+    function addMarker(location, name) {
       var marker = new google.maps.Marker({
         position: location,
-        map: map
+        map: map,
+        title: name
       });
+      
+      /*
+                  var infowindow = new google.maps.InfoWindow({
+                content: marker.getTitle()
+            });
+
+                              google.maps.event.addListener(marker, 'click', function() {
+                infowindow.open(map,marker);
+            });
+*/
       markers.push(marker);
     }
 
     // Sets the map on all markers in the array.
-    function setAllMap() {
+    function setAllMap(passedMap) {
       for (var i = 0; i < markers.length; i++) {
-        markers[i].setMap();
+        markers[i].setMap(passedMap);
       }
     }
 
