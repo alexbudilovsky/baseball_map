@@ -9,11 +9,18 @@
     </script>
     <script type="text/javascript" src="schedule_arrays.js">
     </script>
+    <script type="text/javascript" src="jquery-1.11.3.min.js">
+    </script>
+    <script type="text/javascript" src="get_live_scores.js">
+    </script>
     <script type="text/javascript">
-        var latLng = new google.maps.LatLng(39.5, -98.35);
+        var latLng = new google.maps.LatLng(38.5, -97.35);
         var mapOptions = {
           center: latLng,
-          zoom: 5
+          zoom: 5,
+          panControl:false,
+          zoomControl:false,
+          streetViewControl:false
         };
         var map
 
@@ -77,12 +84,13 @@
     </script>
   </head>
   <body onload="setSliderToCurrentDay()">
-  	<h1>MLB Ballparks Hosting Games</h1>
+  	<h1>MLB Ballparks Hosting Games - <span id="sliderSelectedDate"></span></h1>
 	<div id="map-canvas"></div>
 	<br>
-	Calendar Day:
-	<input type="range" style="width:500px" id = "calendarDaySlider" min="1" max="183" value="1"
-	oninput="updateSliderTextDiv(this.value)" onmouseup="loadMarkerLabels()"/>
-	<div id="sliderSelectedDate"></div>
+  <div id="sliderAndDate">
+  	Calendar Day:
+  	<input type="range" style="width:500px" id = "calendarDaySlider" min="1" max="183" value="1"
+  	oninput="updateSliderTextDiv(this.value, false)" onmouseup="updateSliderTextDiv(this.value, true)"/>
+  </div>
   </body>
 </html>

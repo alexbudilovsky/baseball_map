@@ -8,13 +8,19 @@
         var dayOfBaseballYear = getCurrentDayOfBaseballYear();
 
         document.getElementById("calendarDaySlider").value = dayOfBaseballYear;
-        updateSliderTextDiv(dayOfBaseballYear);
-        loadMarkerLabels();
+        updateSliderTextDiv(dayOfBaseballYear, true);
     }
 
-    function updateSliderTextDiv(slideAmount) {
+    var withInfoWindows; 
+    function updateSliderTextDiv(slideAmount, withInfoWindow) {
         var sliderDiv = document.getElementById("sliderSelectedDate");
         sliderDiv.innerHTML = slideAmtToDate(slideAmount);
+        withInfoWindows = withInfoWindow;
+
+        if (withInfoWindow) {
+            loadLiveScoresXMLForDay(slideAmount);
+        }
+
         showLocations(slideAmount)
     }
 
@@ -73,8 +79,8 @@
     // Google Map Functions Below //
     ////////////////////////////////
 
+    home_team_to_marker = {}
     markers = []
-    infowindows = []
     function showLocations(day_id) {
         var teams = day_id_to_home_teams[day_id]
         
@@ -88,22 +94,6 @@
         }
     }
 
-    // called when releasing the slider so that client is not loading ALL labels on sliding (very slow)
-    function loadMarkerLabels() {
-        for (var i = 0; i < markers.length; i++) {
-
-            var infowindow = new google.maps.InfoWindow({
-                content: markers[i].getTitle()
-            });
-
-            google.maps.event.addListener(markers[i], 'click', function() {
-                infowindow.open(map,markers[i]);
-            });
-        }
-
-    }
-
-
     function putTeamOnMap(team) {
         var loc = team_to_loc[team]
 
@@ -116,23 +106,16 @@
     }
 
     // Add a marker to the map and push to the array.
+    // add info window if releasing slider
     function addMarker(location, name) {
       var marker = new google.maps.Marker({
         position: location,
         map: map,
         title: name
       });
-      
-      /*
-                  var infowindow = new google.maps.InfoWindow({
-                content: marker.getTitle()
-            });
 
-                              google.maps.event.addListener(marker, 'click', function() {
-                infowindow.open(map,marker);
-            });
-*/
       markers.push(marker);
+      home_team_to_marker[marker.getTitle()] = marker
     }
 
     // Sets the map on all markers in the array.
@@ -156,4 +139,5 @@
     function deleteMarkers() {
       clearMarkers();
       markers = [];
+      home_team_to_marker = {}
     }
