@@ -83,14 +83,14 @@
     <script type="text/javascript" src="sliderEvent.js">
     </script>
   </head>
-  <body onload="setSliderToCurrentDay()">
+  <body onload="setSliderToCurrentDay(); loadLiveScoresXMLForDay(document.getElementById('calendarDaySlider').value)">
   	<h1>MLB Ballparks Hosting Games - <span id="sliderSelectedDate"></span></h1>
 	<div id="map-canvas"></div>
 	<br>
   <div id="sliderAndDate">
-  	Calendar Day:
+  	<b>Calendar Day:</b>
   	<input type="range" style="width:500px" id = "calendarDaySlider" min="1" max="183" value="1"
-  	oninput="updateSliderTextDiv(this.value, false)" onmouseup="updateSliderTextDiv(this.value, true)"/>
+  	oninput="updateSliderTextDiv(this.value)" onmouseup="loadLiveScoresXMLForDay(this.value)"/>
   </div>
   </body>
 </html>

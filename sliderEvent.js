@@ -8,18 +8,12 @@
         var dayOfBaseballYear = getCurrentDayOfBaseballYear();
 
         document.getElementById("calendarDaySlider").value = dayOfBaseballYear;
-        updateSliderTextDiv(dayOfBaseballYear, true);
+        updateSliderTextDiv(dayOfBaseballYear);
     }
 
-    var withInfoWindows; 
-    function updateSliderTextDiv(slideAmount, withInfoWindow) {
+    function updateSliderTextDiv(slideAmount) {
         var sliderDiv = document.getElementById("sliderSelectedDate");
         sliderDiv.innerHTML = slideAmtToDate(slideAmount);
-        withInfoWindows = withInfoWindow;
-
-        if (withInfoWindow) {
-            loadLiveScoresXMLForDay(slideAmount);
-        }
 
         showLocations(slideAmount)
     }
@@ -111,7 +105,8 @@
       var marker = new google.maps.Marker({
         position: location,
         map: map,
-        title: name
+        title: name,
+        icon: 'images/baseball_to_start.png'
       });
 
       markers.push(marker);
