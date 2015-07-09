@@ -7,8 +7,13 @@
     function setSliderToCurrentDay() {
         var dayOfBaseballYear = getCurrentDayOfBaseballYear();
 
-        document.getElementById("calendarDaySlider").value = dayOfBaseballYear;
-        updateSliderTextDiv(dayOfBaseballYear);
+        setSliderToDay(dayOfBaseballYear)
+        loadLiveScoresXMLForSliderDay()
+    }
+
+    function setSliderToDay(baseballDay) {
+        document.getElementById("calendarDaySlider").value = baseballDay;
+        updateSliderTextDiv(baseballDay);
     }
 
     function updateSliderTextDiv(slideAmount) {
@@ -16,6 +21,24 @@
         sliderDiv.innerHTML = slideAmtToDate(slideAmount);
 
         showLocations(slideAmount)
+    }
+
+    function moveSliderRight() {
+        var slideAmt = parseInt(document.getElementById('calendarDaySlider').value)
+
+        if (slideAmt < 183) {
+            setSliderToDay(slideAmt + 1)
+            loadLiveScoresXMLForSliderDay()
+        }
+    }
+
+    function moveSliderLeft() {
+        var slideAmt = parseInt(document.getElementById('calendarDaySlider').value)
+
+        if (slideAmt > 1) {
+            setSliderToDay(slideAmt - 1)
+            loadLiveScoresXMLForSliderDay()
+        }
     }
 
     function slideAmtToDate(slideAmount) {
@@ -75,7 +98,10 @@
 
     home_team_to_marker = {}
     markers = []
+    currentBaseballDay = getCurrentDayOfBaseballYear()
+    show_for_day = 1
     function showLocations(day_id) {
+        show_for_day = day_id
         var teams = day_id_to_home_teams[day_id]
         
         deleteMarkers()
@@ -105,9 +131,14 @@
       var marker = new google.maps.Marker({
         position: location,
         map: map,
-        title: name,
-        icon: 'images/baseball_to_start.png'
+        title: name
       });
+
+      if (show_for_day < currentBaseballDay) {
+        marker.setIcon(overIcon)
+      } else {
+        marker.setIcon(toStartIcon)
+      }
 
       markers.push(marker);
       home_team_to_marker[marker.getTitle()] = marker

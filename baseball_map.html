@@ -31,38 +31,64 @@
          */
         function CenterControl(controlDiv, map) {
 
-          // Set CSS for the control border
-          var controlUI = document.createElement('div');
-          controlUI.style.backgroundColor = '#fff';
-          controlUI.style.border = '2px solid #fff';
-          controlUI.style.borderRadius = '3px';
-          controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-          controlUI.style.cursor = 'pointer';
-          controlUI.style.marginBottom = '22px';
-          controlUI.style.textAlign = 'center';
-          controlUI.title = 'Click to recenter the map';
-          controlDiv.appendChild(controlUI);
+        // Set CSS for the control border
+        var controlUI = document.createElement('div');
+        controlUI.style.backgroundColor = '#fff';
+        controlUI.style.border = '2px solid #fff';
+        controlUI.style.borderRadius = '3px';
+        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI.style.cursor = 'pointer';
+        controlUI.style.float = 'left';
+        controlUI.style.marginBottom = '22px';
+        controlUI.style.textAlign = 'center';
+        controlUI.title = 'Click to recenter the map';
+        controlDiv.appendChild(controlUI);
 
-          // Set CSS for the control interior
-          var controlText = document.createElement('div');
-          controlText.style.color = 'rgb(25,25,25)';
-          controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-          controlText.style.fontSize = '16px';
-          controlText.style.lineHeight = '38px';
-          controlText.style.paddingLeft = '5px';
-          controlText.style.paddingRight = '5px';
-          controlText.innerHTML = 'Center Map';
-          controlUI.appendChild(controlText);
+        // Set CSS for the control interior
+        var goCenterText = document.createElement('div');
+        controlUI.style.color = 'rgb(25,25,25)';
+        controlUI.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlUI.style.fontSize = '16px';
+        controlUI.style.lineHeight = '38px';
+        controlUI.style.paddingLeft = '5px';
+        controlUI.style.paddingRight = '5px';
+        controlUI.innerHTML = 'Center Map';
+        controlUI.appendChild(goCenterText);
 
-          // Setup the click event listeners: simply set the map to
-          // Chicago
+        // Set CSS for the setCenter control border
+        var todayUI = document.createElement('div');
+        todayUI.style.backgroundColor = '#fff';
+        todayUI.style.border = '2px solid #fff';
+        todayUI.style.borderRadius = '3px';
+        todayUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        todayUI.style.cursor = 'pointer';
+        todayUI.style.float = 'left';
+        todayUI.style.marginBottom = '22px';
+        todayUI.style.marginLeft = '12px';
+        todayUI.style.textAlign = 'center';
+        todayUI.title = 'Click to set the current day to today';
+        controlDiv.appendChild(todayUI);
+
+        // Set CSS for the control interior
+        var todayText = document.createElement('div');
+        todayText.style.color = 'rgb(25,25,25)';
+        todayText.style.fontFamily = 'Roboto,Arial,sans-serif';
+        todayText.style.fontSize = '16px';
+        todayText.style.lineHeight = '38px';
+        todayText.style.paddingLeft = '5px';
+        todayText.style.paddingRight = '5px';
+        todayText.innerHTML = 'Go To Today';
+        todayUI.appendChild(todayText);
+
           google.maps.event.addDomListener(controlUI, 'click', function() {
             map.setCenter(latLng)
             map.setZoom(5)
           });
 
+          google.maps.event.addDomListener(todayUI, 'click', function() {
+            setSliderToCurrentDay()
+          });
         }
-
 
       function initialize() {
 
@@ -83,14 +109,16 @@
     <script type="text/javascript" src="sliderEvent.js">
     </script>
   </head>
-  <body onload="setSliderToCurrentDay(); loadLiveScoresXMLForDay(document.getElementById('calendarDaySlider').value)">
+  <body onload="setSliderToCurrentDay();">
   	<h1>MLB Ballparks Hosting Games - <span id="sliderSelectedDate"></span></h1>
 	<div id="map-canvas"></div>
 	<br>
   <div id="sliderAndDate">
   	<b>Calendar Day:</b>
+    <button type="button" onClick="moveSliderLeft()">&#9668;</button>
   	<input type="range" style="width:500px" id = "calendarDaySlider" min="1" max="183" value="1"
-  	oninput="updateSliderTextDiv(this.value)" onmouseup="loadLiveScoresXMLForDay(this.value)"/>
+  	oninput="updateSliderTextDiv(this.value)" onmouseup="loadLiveScoresXMLForSliderDay()"/>
+    <button type="button" onClick="moveSliderRight()">&#9658;</button>
   </div>
   </body>
 </html>

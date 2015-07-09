@@ -3,8 +3,11 @@
 	var toStartIcon = "images/baseball_to_start.png"
 	var inProgIcon = "images/baseball_in_prog.png"
 	var overIcon = "images/baseball_over.png"
+	var delayIcon = ""
 
-	function loadLiveScoresXMLForDay(slideAmt) {
+	function loadLiveScoresXMLForSliderDay() {
+		var slideAmt = document.getElementById('calendarDaySlider').value
+
 		var url = getUrlForDay(slideAmt)
 
 		$.ajax({
