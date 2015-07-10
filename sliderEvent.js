@@ -97,6 +97,7 @@
     ////////////////////////////////
 
     home_team_to_marker = {}
+    home_team_to_infowindow = {}
     markers = []
     currentBaseballDay = getCurrentDayOfBaseballYear()
     show_for_day = 1
@@ -166,4 +167,5 @@
       clearMarkers();
       markers = [];
       home_team_to_marker = {}
+      home_team_to_infowindow = {}
     }

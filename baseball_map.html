@@ -30,7 +30,7 @@
          * @constructor
          */
         function CenterControl(controlDiv, map) {
-
+          
         // Set CSS for the control border
         var controlUI = document.createElement('div');
         controlUI.style.backgroundColor = '#fff';
@@ -40,6 +40,7 @@
         controlUI.style.cursor = 'pointer';
         controlUI.style.float = 'left';
         controlUI.style.marginBottom = '22px';
+        controlUI.style.marginLeft = '12px';
         controlUI.style.textAlign = 'center';
         controlUI.title = 'Click to recenter the map';
         controlDiv.appendChild(controlUI);
@@ -71,13 +72,13 @@
 
         // Set CSS for the control interior
         var todayText = document.createElement('div');
-        todayText.style.color = 'rgb(25,25,25)';
-        todayText.style.fontFamily = 'Roboto,Arial,sans-serif';
-        todayText.style.fontSize = '16px';
-        todayText.style.lineHeight = '38px';
-        todayText.style.paddingLeft = '5px';
-        todayText.style.paddingRight = '5px';
-        todayText.innerHTML = 'Go To Today';
+        todayUI.style.color = 'rgb(25,25,25)';
+        todayUI.style.fontFamily = 'Roboto,Arial,sans-serif';
+        todayUI.style.fontSize = '16px';
+        todayUI.style.lineHeight = '38px';
+        todayUI.style.paddingLeft = '5px';
+        todayUI.style.paddingRight = '5px';
+        todayUI.innerHTML = 'Go To Today';
         todayUI.appendChild(todayText);
 
           google.maps.event.addDomListener(controlUI, 'click', function() {
@@ -111,14 +112,19 @@
   </head>
   <body onload="setSliderToCurrentDay();">
   	<h1>MLB Ballparks Hosting Games - <span id="sliderSelectedDate"></span></h1>
+      <div id="sliderAndDate">
+    <b>Calendar Day:</b>
+    <button type="button" onClick="moveSliderLeft()">&#9668;</button>
+    <input type="range" style="width:500px" id = "calendarDaySlider" min="1" max="183" value="1"
+    oninput ="updateSliderTextDiv(this.value)" onmouseup="loadLiveScoresXMLForSliderDay()"/>
+    <button type="button" onClick="moveSliderRight()">&#9658;</button>
+    <br><br>
+  </div>
 	<div id="map-canvas"></div>
 	<br>
-  <div id="sliderAndDate">
-  	<b>Calendar Day:</b>
-    <button type="button" onClick="moveSliderLeft()">&#9668;</button>
-  	<input type="range" style="width:500px" id = "calendarDaySlider" min="1" max="183" value="1"
-  	oninput="updateSliderTextDiv(this.value)" onmouseup="loadLiveScoresXMLForSliderDay()"/>
-    <button type="button" onClick="moveSliderRight()">&#9658;</button>
-  </div>
+
+  <div style="text-align: right; font-family:'Lucida Console', Monaco, monospace">
+  Contact: alexbudy@gmail.com
+  <div>
   </body>
 </html>

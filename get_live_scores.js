@@ -3,18 +3,23 @@
 	var toStartIcon = "images/baseball_to_start.png"
 	var inProgIcon = "images/baseball_in_prog.png"
 	var overIcon = "images/baseball_over.png"
-	var delayIcon = ""
+	var delayIcon = "images/baseball_delay.png"
+	var doubleHeader = "images/double_header.png"
+	var futureDoubleHeader = "images/future_double_header.png"
 
 	function loadLiveScoresXMLForSliderDay() {
 		var slideAmt = document.getElementById('calendarDaySlider').value
 
 		var url = getUrlForDay(slideAmt)
 
+		jQuery.support.cors = true;
 		$.ajax({
     		url: url, // name of file you want to parse
     		dataType: "xml", // type of file you are trying to read
     		success: parse, // name of the function to call upon success
-			error: function(){alert("Error: Something went wrong");},
+			error: function(jqXHR, textStatus, errorThrown){
+				console.log(errorThrown+'\n'+status+'\n'+jqXHR.statusText);
+			},
 			cache: false,
 			async: true
   		});
@@ -62,76 +67,122 @@
 		var in_progress = xml.getElementsByTagName('ig_game');
 		var pregame = xml.getElementsByTagName('sg_game');
 
-		for (i=0; i < in_progress.length; i++) {	
+		for (i=0; i < in_progress.length; i++) {
 			var game = in_progress[i]
-			var teams = game.getElementsByTagName('team')
 
-			var home_team = teams[0].getAttribute('name')
-			var home_team_score = teams[0].getElementsByTagName('gameteam')[0].getAttribute('R')
-			var away_team = teams[1].getAttribute('name')
-			var away_team_score = teams[1].getElementsByTagName('gameteam')[0].getAttribute('R')
-
-
-			var inningnum = game.getElementsByTagName('inningnum')[0].getAttribute('inning')
-			var half = game.getElementsByTagName('inningnum')[0].getAttribute('half')
-
-			var html = generateHTMLForInProgressGame(home_team, home_team_score, away_team, away_team_score, inningnum, half)
-      		var cur_marker = home_team_to_marker[team_name_to_code[home_team]]
-      		cur_marker.setIcon(inProgIcon)
-
-      		addInfoWindow(cur_marker, html)
+			if (getGameId(game).slice(-1) != '1') {
+			console.log('here in prog' + getGameId(game))
+			} else {
+				addWindowForInProgGame(game)
+			} 
 		}
 
 		for (i = 0; i < games_over.length; i++) {
 			var game = games_over[i]
-			var teams = game.getElementsByTagName('team')
 
-			var home_team = teams[0].getAttribute('name')
-			var home_team_score = teams[0].getElementsByTagName('gameteam')[0].getAttribute('R')
-			var away_team = teams[1].getAttribute('name')
-			var away_team_score = teams[1].getElementsByTagName('gameteam')[0].getAttribute('R')
-
-			var html = generateHTMLForGameOverGame(home_team, home_team_score, away_team, away_team_score)
-      		var cur_marker = home_team_to_marker[team_name_to_code[home_team]]
-      		cur_marker.setIcon(overIcon)
-
-      		addInfoWindow(cur_marker, html)
+			addWindowForPostgame(game)
 		}
 
 		for (i = 0; i < pregame.length; i++) {
 			var game = pregame[i]
-			var teams = game.getElementsByTagName('team')
 
-			var home_team = teams[0].getAttribute('name')
-			var away_team = teams[1].getAttribute('name')
-			var start_time = game.getElementsByTagName('game')[0].getAttribute('start_time')
-
-			var html = generateHTMLForPreGame(home_team, away_team, start_time)
-
-			var cur_marker = home_team_to_marker[team_name_to_code[home_team]]
-			cur_marker.setIcon(toStartIcon)
-
-      		addInfoWindow(cur_marker, html)
+			addWindowForPregame(game)	
 		}
 	}
 
-	//TODO add delay status
+	function getGameId(game) {
+		return game.getElementsByTagName('game')[0].getAttribute('id')
+	}
+
+	function addWindowForInProgGame(game) {
+		var teams = game.getElementsByTagName('team')
+
+		var home_team = teams[0].getAttribute('name')
+		var home_team_score = teams[0].getElementsByTagName('gameteam')[0].getAttribute('R')
+		var away_team = teams[1].getAttribute('name')
+		var away_team_score = teams[1].getElementsByTagName('gameteam')[0].getAttribute('R')
+
+
+		var inningnum = game.getElementsByTagName('inningnum')[0].getAttribute('inning')
+		var half = game.getElementsByTagName('inningnum')[0].getAttribute('half')
+
+		var html = generateHTMLForInProgressGame(home_team, home_team_score, away_team, away_team_score, inningnum, half)
+  		html += generateMLBUrlForId(game)
+
+  		var cur_marker = home_team_to_marker[team_name_to_code[home_team]]
+  		cur_marker.setIcon(inProgIcon)
+
+  		addInfoWindow(cur_marker, html)
+	}
+
+	function addWindowForPregame(game) {
+		var teams = game.getElementsByTagName('team')
+
+		var home_team = teams[0].getAttribute('name')
+		var away_team = teams[1].getAttribute('name')
+		var start_time = game.getElementsByTagName('game')[0].getAttribute('start_time')
+
+		var cur_marker = home_team_to_marker[team_name_to_code[home_team]]
+		var html
+		if (game.getElementsByTagName('game')[0].getAttribute("status") == "OTHER") {
+			// game delayed
+			html = generateHTMLForGameDelay(home_team, away_team, start_time, game.getElementsByTagName("delay_reason")[0].childNodes[0].nodeValue)
+			html += generateMLBUrlForId(game)
+
+			cur_marker.setIcon(delayIcon)
+		} else {
+			html = generateHTMLForPreGame(home_team, away_team, start_time)
+			html += generateMLBUrlForId(game)
+
+			cur_marker.setIcon(toStartIcon)
+		}
+
+
+		addInfoWindow(cur_marker, html)
+	}
+
+	function addWindowForPostgame(game) {
+		var teams = game.getElementsByTagName('team')
+
+		var home_team = teams[0].getAttribute('name')
+		var home_team_score = teams[0].getElementsByTagName('gameteam')[0].getAttribute('R')
+		var away_team = teams[1].getAttribute('name')
+		var away_team_score = teams[1].getElementsByTagName('gameteam')[0].getAttribute('R')
+		var start_time = game.getElementsByTagName('game')[0].getAttribute('start_time')
+
+		var html = generateHTMLForGameOverGame(home_team, home_team_score, away_team, away_team_score, start_time)
+		html += generateMLBUrlForId(game)
+
+  		var cur_marker = home_team_to_marker[team_name_to_code[home_team]]
+  		cur_marker.setIcon(overIcon)
+
+  		addInfoWindow(cur_marker, html)
+	}
+
+	function generateHTMLForGameDelay(home_team, away_team, start_time, delay_reason) {
+		html = "Delayed: <b>" + delay_reason + "</b>"
+		html += "<center>" + away_team + " at " + home_team + "</center>"
+		html += "Start Time: <b>" + start_time + "</b><br>"
+		return html
+	}
+
 	function generateHTMLForPreGame(home_team, away_team, start_time) {
 		var html = "<center>" + away_team + " at " + home_team + "</center>"
-		html += "Start Time: <b>" + start_time + "</b>"
+		html += "Start Time: <b>" + start_time + "</b><br>"
 		return html 
 	}
 
-	function generateHTMLForGameOverGame(home_team, home_team_score, away_team, away_team_score) {
+	function generateHTMLForGameOverGame(home_team, home_team_score, away_team, away_team_score, start_time) {
 		var html = "<b>Final: </b><br>"
 		html += away_team + " <b>" + away_team_score + "</b> at " + home_team + " <b>" + home_team_score + "</b><br>"
+		html += "<i>Started: " + start_time + "</i><br>"
 		return html
 	}
 
 	function generateHTMLForInProgressGame(home_team, home_team_score, away_team, away_team_score, inningnum, half) {
-		var html = "<b>In Progress: </b><br>"
+		var html = "<i>In Progress: </i><br>"
 		html += away_team + " <b>" + away_team_score + "</b> at " + home_team + " <b>" + home_team_score + "</b><br>"
-		html += "<center>"
+		html += "<center><b>"
 		if (half == 'T') {
 			html += "Top "
 		} else {
@@ -147,16 +198,42 @@
 		} else {
 			html += inningnum + "th"
 		}
-		html += "</center>"
+		html += "</b></center>"
+
+		return html
+	}
+
+	function generateMLBUrlForId(game) {
+		var id = getGameId(game)
+		var url = "http://mlb.mlb.com/mlb/gameday/index.jsp?gid=" + id
+
+		var html = "<center><a href=\"" + url + "\" target=\"_blank\">Game Link</a></center>"
 
 		return html
 	}
 
 	function addInfoWindow(cur_marker, html) {
-    	var infoWindow = new google.maps.InfoWindow;
+		var home_team_code = cur_marker.getTitle()
 
-    	google.maps.event.addListener(cur_marker, 'click', function() {
-        	infoWindow.setContent(html);
-        	infoWindow.open(map,cur_marker);
-    	});
+		if (home_team_code in home_team_to_infowindow) {
+			var content = home_team_to_infowindow[home_team_code].getContent()
+			home_team_to_infowindow[home_team_code].setContent(content + html)
+
+			if (cur_marker.getIcon() == overIcon) { //TODO potentially add more icons here for all double headers? lot of work for few days
+				cur_marker.setIcon(doubleHeader)
+			} else {
+				cur_marker.setIcon(futureDoubleHeader)
+			}
+		} else {
+			var infoWindow = new google.maps.InfoWindow;
+			infoWindow.setContent(html);
+
+	    	google.maps.event.addListener(cur_marker, 'click', function() {
+	        	infoWindow.open(map,cur_marker);
+	    	});
+
+	    	home_team_to_infowindow[home_team_code] = infoWindow
+		}
+
+
 	}
