@@ -229,7 +229,12 @@
 			infoWindow.setContent(html);
 
 	    	google.maps.event.addListener(cur_marker, 'click', function() {
-	        	infoWindow.open(map,cur_marker);
+	    		if (infoWindow.getMap() == null) {
+	    			infoWindow.open(map,cur_marker)
+	    		} else {
+	    			infoWindow.close()
+	    		}
+
 	    	});
 
 	    	home_team_to_infowindow[home_team_code] = infoWindow
