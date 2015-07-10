@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>2015 Interactive Baseball Schedule Calendar</title>
   	<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
     <link rel="shortcut icon" href="images/baseball.ico">
     <style type="text/css">
@@ -119,13 +120,12 @@
     <input type="range" style="width:500px" id="calendarDaySlider" min="1" max="183" value="1"
     oninput="updateSliderTextDiv(this.value)" onchange="updateSliderTextDiv(this.value)" onmouseup="loadLiveScoresXMLForSliderDay()"/>
     <button type="button" onClick="moveSliderRight()">&#9658;</button>
-    <br><br>
+    <br>
+  </div>
+  <div style="text-align: right">
+    <a href="index.html">Home Page</a>
   </div>
 	<div id="map-canvas"></div>
 	<br>
-
-  <div style="text-align: right; font-family:'Lucida Console', Monaco, monospace">
-  Contact: alexbudy@gmail.com
-  <div>
   </body>
 </html>
