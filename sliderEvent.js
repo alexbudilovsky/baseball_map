@@ -1,3 +1,5 @@
+    var whichTeamToShow = "ALL"
+
     // add proototype for day of year
     Date.prototype.getDOY = function() {
         var onejan = new Date(this.getFullYear(),0,1);
@@ -24,7 +26,7 @@
     }
 
     function moveSliderRight() {
-        var slideAmt = parseInt(document.getElementById('calendarDaySlider').value)
+        var slideAmt = getSliderValue()
 
         if (slideAmt < 183) {
             setSliderToDay(slideAmt + 1)
@@ -33,12 +35,16 @@
     }
 
     function moveSliderLeft() {
-        var slideAmt = parseInt(document.getElementById('calendarDaySlider').value)
+        var slideAmt = getSliderValue()
 
         if (slideAmt > 1) {
             setSliderToDay(slideAmt - 1)
             loadLiveScoresXMLForSliderDay()
         }
+    }
+
+    function getSliderValue() {
+        return parseInt(document.getElementById('calendarDaySlider').value)
     }
 
     function slideAmtToDate(slideAmount) {
@@ -68,7 +74,7 @@
     		day -= 183 ;
     	}
 
-    	return dayOfMLBYearToDayOfWeek(slideAmount) + ", " + month +  " " + day;
+    	return dayOfMLBYearToDayOfWeek(slideAmount) + ", " + month +  " " + day + ", 2015";
     }
 
     // day1 = Sunday (April 5, 2015)
@@ -92,6 +98,18 @@
         }
     }
 
+    // by default, ALL is selected
+    function showTeamOrAll(selection) {
+        if (selection == "ALL") {
+            whichTeamToShow = "ALL"
+        } else {
+            whichTeamToShow = team_name_to_code[selection]
+        }
+
+        showLocations(getSliderValue())
+        loadLiveScoresXMLForSliderDay()
+    }
+
     ////////////////////////////////
     // Google Map Functions Below //
     ////////////////////////////////
@@ -103,7 +121,7 @@
     show_for_day = 1
     function showLocations(day_id) {
         show_for_day = day_id
-        var teams = day_id_to_home_teams[day_id]
+        var teams = day_id_to_games[day_id]
         
         deleteMarkers()
         
@@ -111,7 +129,15 @@
             return
         }
         for (var i = 0; i < teams.length; i++) {
-            putTeamOnMap(teams[i]) 
+            var homeTeam = teams[i][0]
+            var awayTeam = teams[i][1]
+
+            if (whichTeamToShow == "ALL") {
+                putTeamOnMap(homeTeam) 
+            } else if (whichTeamToShow == homeTeam || whichTeamToShow == awayTeam) {
+                putTeamOnMap(homeTeam)
+                break
+            }
         }
     }
 
@@ -135,7 +161,9 @@
         title: name
       });
 
-      if (show_for_day < currentBaseballDay) {
+      if (show_for_day == 101) {
+        marker.setIcon(allStarGameIcon)
+      } else if (show_for_day < currentBaseballDay) {
         marker.setIcon(overIcon)
       } else {
         marker.setIcon(toStartIcon)

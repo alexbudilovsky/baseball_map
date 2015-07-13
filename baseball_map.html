@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>2015 Interactive Baseball Schedule Calendar</title>
-  	<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+  	<link rel="stylesheet" type="text/css" href="baseball_map_style.css" media="screen" />
     <link rel="shortcut icon" href="images/baseball.ico">
     <style type="text/css">
       html, body, #map-canvas { margin: 0; padding: 0;}
@@ -120,6 +120,10 @@
     <input type="range" style="width:500px" id="calendarDaySlider" min="1" max="183" value="1"
     oninput="updateSliderTextDiv(this.value)" onchange="updateSliderTextDiv(this.value)" onmouseup="loadLiveScoresXMLForSliderDay()"/>
     <button type="button" onClick="moveSliderRight()">&#9658;</button>
+
+    <select id="selectTeam" onchange="showTeamOrAll(this.value)">
+      <option value="ALL">Show All Teams</option>
+    </select>
     <br>
   </div>
   <div style="text-align: right">
@@ -127,5 +131,23 @@
   </div>
 	<div id="map-canvas"></div>
 	<br>
+
+  <script type="text/javascript">
+      var select = document.getElementById("selectTeam");
+      var sortedTeamNames = [];
+      for(var key in team_name_to_code) {
+        sortedTeamNames.push(key)
+      }
+      sortedTeamNames.sort()
+
+      for(var i = 0; i < sortedTeamNames.length; i++) {
+          var opt = sortedTeamNames[i]
+          var el = document.createElement("option");
+          el.textContent = opt;
+          el.value = opt;
+          select.appendChild(el);
+      }
+  </script>
+
   </body>
 </html>

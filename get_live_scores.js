@@ -4,15 +4,16 @@
 	var inProgIcon = "images/baseball_in_prog.png"
 	var overIcon = "images/baseball_over.png"
 	var delayIcon = "images/baseball_delay.png"
-	var doubleHeader = "images/double_header.png"
-	var futureDoubleHeader = "images/future_double_header.png"
+	var doubleHeaderIcon = "images/double_header.png"
+	var futureDoubleHeaderIcon = "images/future_double_header.png"
+	var allStarGameIcon = "images/all-star_game.png"
 
 	function loadLiveScoresXMLForSliderDay() {
 		var slideAmt = document.getElementById('calendarDaySlider').value
 
 		var url = getUrlForDay(slideAmt)
 
-		jQuery.support.cors = true;
+		jQuery.support.cors = true;  // needed for IE
 		$.ajax({
     		url: url, // name of file you want to parse
     		dataType: "xml", // type of file you are trying to read
@@ -70,11 +71,7 @@
 		for (i=0; i < in_progress.length; i++) {
 			var game = in_progress[i]
 
-			if (getGameId(game).slice(-1) != '1') {
-			console.log('here in prog' + getGameId(game))
-			} else {
-				addWindowForInProgGame(game)
-			} 
+			addWindowForInProgGame(game) 
 		}
 
 		for (i = 0; i < games_over.length; i++) {
@@ -110,6 +107,10 @@
   		html += generateMLBUrlForId(game)
 
   		var cur_marker = home_team_to_marker[team_name_to_code[home_team]]
+  		if (cur_marker == undefined) { // marker not on map
+  			return
+  		}
+
   		cur_marker.setIcon(inProgIcon)
 
   		addInfoWindow(cur_marker, html)
@@ -123,6 +124,10 @@
 		var start_time = game.getElementsByTagName('game')[0].getAttribute('start_time')
 
 		var cur_marker = home_team_to_marker[team_name_to_code[home_team]]
+  		if (cur_marker == undefined) { // marker not on map
+  			return
+  		}
+
 		var html
 		if (game.getElementsByTagName('game')[0].getAttribute("status") == "OTHER") {
 			// game delayed
@@ -154,6 +159,10 @@
 		html += generateMLBUrlForId(game)
 
   		var cur_marker = home_team_to_marker[team_name_to_code[home_team]]
+  		if (cur_marker == undefined) { // marker not on map
+  			return
+  		}
+  		
   		cur_marker.setIcon(overIcon)
 
   		addInfoWindow(cur_marker, html)
@@ -220,9 +229,9 @@
 			home_team_to_infowindow[home_team_code].setContent(content + html)
 
 			if (cur_marker.getIcon() == overIcon) { //TODO potentially add more icons here for all double headers? lot of work for few days
-				cur_marker.setIcon(doubleHeader)
+				cur_marker.setIcon(doubleHeaderIcon)
 			} else {
-				cur_marker.setIcon(futureDoubleHeader)
+				cur_marker.setIcon(futureDoubleHeaderIcon)
 			}
 		} else {
 			var infoWindow = new google.maps.InfoWindow;
@@ -238,6 +247,10 @@
 	    	});
 
 	    	home_team_to_infowindow[home_team_code] = infoWindow
+		}
+
+		if (home_team_code == 'ASG_NL') { // special All-Start Game case
+			cur_marker.setIcon(allStarGameIcon)
 		}
 
 
