@@ -1,4 +1,3 @@
-	var xmlloaded = false;
 	var url_template = "http://gd2.mlb.com/components/game/mlb/year_2015/month_07/day_08/scoreboard.xml";
 	var toStartIcon = "images/baseball_to_start.png"
 	var inProgIcon = "images/baseball_in_prog.png"
