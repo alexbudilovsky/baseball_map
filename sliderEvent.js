@@ -6,6 +6,71 @@
         return Math.ceil((this - onejan) / 86400000);
     }
 
+    function getURLParameter(sParam) {
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split('&');
+        for (var i = 0; i < sURLVariables.length; i++) {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) {
+               return sParameterName[1];
+            }
+        }
+    }
+
+    function getURLForSharing() {
+        var selectObj = document.getElementById("selectTeam");
+        var clean_uri = location.protocol + "//" + location.host + location.pathname;
+
+        clean_uri += "?baseball_day=" + document.getElementById("calendarDaySlider").value
+        clean_uri += "&team_to_show=" + selectObj.value
+
+        prompt("Copy to clipboard: Ctrl+C, Enter", clean_uri);
+    }
+
+    function cleanURLQuery() {
+        var clean_uri = location.protocol + "//" + location.host + location.pathname;
+
+        window.history.replaceState({}, document.title, clean_uri);
+    }
+
+    function setDropDownToTeamCode() {
+        var selectObj = document.getElementById("selectTeam");
+
+        for (var i = 0; i < selectObj.options.length; i++) {
+            if (selectObj.options[i].value == whichTeamToShow) {
+                selectObj.options[i].selected = true;
+                return;
+            }
+        }
+    }
+
+    // example: baseball_map.html?baseball_day=50&team_to_show=OAK|ALL|...
+    function setSliderToDayFromURL() {
+        var baseball_day = getURLParameter('baseball_day')
+        var team_to_show = getURLParameter('team_to_show')
+
+        if (team_to_show != undefined && team_to_show != null) {
+            if (!(team_to_show.toUpperCase() in team_to_loc)) {
+                whichTeamToShow = "ALL"
+            } else {
+               whichTeamToShow = team_to_show.toUpperCase()                
+            }
+
+            setDropDownToTeamCode()
+        }
+
+        if (baseball_day != undefined && baseball_day != null) {
+            baseball_day = parseInt(baseball_day)
+            if (baseball_day >= 1 && baseball_day <= 188) {
+                setSliderToDay(baseball_day)
+                loadLiveScoresXMLForSliderDay()
+                return
+            }
+        } 
+
+        setSliderToCurrentDay()
+    }
+
     function setSliderToCurrentDay() {
         var dayOfBaseballYear = getCurrentDayOfBaseballYear();
 
@@ -103,7 +168,7 @@
         if (selection == "ALL") {
             whichTeamToShow = "ALL"
         } else {
-            whichTeamToShow = team_name_to_code[selection]
+            whichTeamToShow = selection
         }
 
         showLocations(getSliderValue())

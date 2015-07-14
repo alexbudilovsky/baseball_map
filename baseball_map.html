@@ -113,7 +113,7 @@
     <script type="text/javascript" src="sliderEvent.js">
     </script>
   </head>
-  <body onload="setSliderToCurrentDay();">
+  <body onload="setSliderToDayFromURL(); cleanURLQuery();">
   	<h1>MLB Ballparks Hosting Games - <span id="sliderSelectedDate"></span></h1>
       <div id="sliderAndDate">
     <b>Calendar Day:</b>
@@ -127,8 +127,11 @@
     </select>
     <br>
   </div>
-  <div style="text-align: right">
+  <div id="container">
+      <div id="right-nav-links">
     <a href="index.html">Home Page</a> | <a href="https://github.com/alexbudilovsky/baseball_map" target="_blank">GitHub</a>
+     | &nbsp <button id="sharing_button" onClick="getURLForSharing()">Get Link For Sharing</button>
+      </div>
   </div>
 	<div id="map-canvas"></div>
 	<br>
@@ -145,7 +148,7 @@
           var opt = sortedTeamNames[i]
           var el = document.createElement("option");
           el.textContent = opt;
-          el.value = opt;
+          el.value = team_name_to_code[opt];
           select.appendChild(el);
       }
   </script>
