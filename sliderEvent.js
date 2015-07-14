@@ -160,6 +160,7 @@
         map: map,
         title: name
       });
+      marker.clicked = false
 
       if (show_for_day == 101) {
         marker.setIcon(allStarGameIcon)

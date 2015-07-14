@@ -236,13 +236,23 @@
 			var infoWindow = new google.maps.InfoWindow;
 			infoWindow.setContent(html);
 
-	    	google.maps.event.addListener(cur_marker, 'click', function() {
+	    	google.maps.event.addListener(cur_marker, 'mouseover', function() {
 	    		if (infoWindow.getMap() == null) {
 	    			infoWindow.open(map,cur_marker)
-	    		} else {
+	    		}
+	    	});
+
+	    	google.maps.event.addListener(cur_marker, 'mouseout', function() {
+	    		if (infoWindow.getMap() != null && !cur_marker.clicked) {
+	    			infoWindow.close()
+	    		} 
+	    	});
+
+	    	google.maps.event.addListener(cur_marker, 'click', function() {
+	    		cur_marker.clicked = !cur_marker.clicked
+	    		if (!cur_marker.clicked) {
 	    			infoWindow.close()
 	    		}
-
 	    	});
 
 	    	home_team_to_infowindow[home_team_code] = infoWindow

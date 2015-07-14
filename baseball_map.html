@@ -21,8 +21,9 @@
           center: latLng,
           zoom: 5,
           panControl:false,
-          zoomControl:false,
-          streetViewControl:false
+          zoomControl:true,
+          streetViewControl:false,
+          scrollwheel:false
         };
         var map
 
@@ -127,7 +128,7 @@
     <br>
   </div>
   <div style="text-align: right">
-    <a href="index.html">Home Page</a>
+    <a href="index.html">Home Page</a> | <a href="https://github.com/alexbudilovsky/baseball_map" target="_blank">GitHub</a>
   </div>
 	<div id="map-canvas"></div>
 	<br>
@@ -148,6 +149,5 @@
           select.appendChild(el);
       }
   </script>
-
   </body>
 </html>
