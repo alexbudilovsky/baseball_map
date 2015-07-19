@@ -3,8 +3,13 @@
 	var inProgIcon = "images/baseball_in_prog.png"
 	var overIcon = "images/baseball_over.png"
 	var delayIcon = "images/baseball_delay.png"
-	var doubleHeaderIcon = "images/double_header.png"
+	var doubleHeaderOverOver = "images/double_header.png"
 	var futureDoubleHeaderIcon = "images/future_double_header.png"
+	var doubleHeaderFinalAndToPlay = "images/double_header_final_and_to_play.png"
+	var doubleHeaderInProgToPlay = "images/double_header_in_prog_to_play.png"
+	var doubleHeaderDelayToPlay = "images/double_header_delay_to_play.png"
+	var doubleHeaderFinalInGame = "images/double_header_final_in_game.png"
+	var doubleHeaderFinalDelayed = "images/double_header_final_delayed.png"
 	var allStarGameIcon = "images/all-star_game.png"
 
 	function loadLiveScoresXMLForSliderDay() {
@@ -227,8 +232,20 @@
 			var content = home_team_to_infowindow[home_team_code].getContent()
 			home_team_to_infowindow[home_team_code].setContent(content + html)
 
-			if (cur_marker.getIcon() == overIcon) { //TODO potentially add more icons here for all double headers? lot of work for few days
-				cur_marker.setIcon(doubleHeaderIcon)
+			if (cur_marker.getIcon() == overIcon) {
+				if (html.indexOf("In Progress") > -1) {
+					cur_marker.setIcon(doubleHeaderFinalInGame)
+				} else if (html.indexOf("Delayed") > -1) {
+					cur_marker.setIcon(doubleHeaderFinalDelayed)
+				} else if (html.indexOf("Final") > -1) {
+					cur_marker.setIcon(doubleHeaderOverOver)
+				} else {
+					cur_marker.setIcon(doubleHeaderFinalAndToPlay)
+				}
+			} else if (cur_marker.getIcon() == inProgIcon) {
+				cur_marker.setIcon(doubleHeaderInProgToPlay)
+			} else if (cur_marker.getIcon() == delayIcon) {
+				cur_marker.setIcon(doubleHeaderDelayToPlay)
 			} else {
 				cur_marker.setIcon(futureDoubleHeaderIcon)
 			}
