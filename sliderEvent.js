@@ -50,7 +50,7 @@
         var team_to_show = getURLParameter('team_to_show')
 
         if (team_to_show != undefined && team_to_show != null) {
-            if (!(team_to_show.toUpperCase() in team_to_loc)) {
+            if (!(team_to_show.toUpperCase() in team_to_loc)  && team_to_show != "NONE") {
                 whichTeamToShow = "ALL"
             } else {
                whichTeamToShow = team_to_show.toUpperCase()                
@@ -165,11 +165,7 @@
 
     // by default, ALL is selected
     function showTeamOrAll(selection) {
-        if (selection == "ALL") {
-            whichTeamToShow = "ALL"
-        } else {
-            whichTeamToShow = selection
-        }
+        whichTeamToShow = selection
 
         showLocations(getSliderValue())
         loadLiveScoresXMLForSliderDay()
@@ -197,13 +193,33 @@
             var homeTeam = teams[i][0]
             var awayTeam = teams[i][1]
 
+            var marker = putTeamOnMap(homeTeam)
+            addIconToMarker(marker, homeTeam, awayTeam)
+        }
+    }
+
+    function addIconToMarker(marker, homeTeamcode, awayTeamcode) {
+        if (whichTeamToShow == "ALL" || whichTeamToShow == homeTeamcode || whichTeamToShow == awayTeamcode) {
             if (whichTeamToShow == "ALL") {
-                putTeamOnMap(homeTeam) 
-            } else if (whichTeamToShow == homeTeam || whichTeamToShow == awayTeam) {
-                putTeamOnMap(homeTeam)
-                break
+                var path = getPathToTeamIcon(homeTeamcode)
+            } else {
+                var path = getPathToTeamIcon(whichTeamToShow)
+            }
+            marker.setIcon(path)
+        } else {
+            if (show_for_day == 101) {
+              marker.setIcon(allStarGameIcon)
+            } else if (show_for_day < currentBaseballDay) {
+              marker.setIcon(overIcon)
+            } else {
+              marker.setIcon(toStartIcon)
             }
         }
+
+    }
+
+    function getPathToTeamIcon(teamname) {
+        return "team_icons/teamcode_icon.jpg".replace(/teamcode/, teamname)
     }
 
     function putTeamOnMap(team) {
@@ -214,7 +230,7 @@
 
         var latLng = new google.maps.LatLng(lat, lng);
 
-        addMarker(latLng, team)
+        return addMarker(latLng, team)
     }
 
     // Add a marker to the map and push to the array.
@@ -227,16 +243,9 @@
       });
       marker.clicked = false
 
-      if (show_for_day == 101) {
-        marker.setIcon(allStarGameIcon)
-      } else if (show_for_day < currentBaseballDay) {
-        marker.setIcon(overIcon)
-      } else {
-        marker.setIcon(toStartIcon)
-      }
-
       markers.push(marker);
       home_team_to_marker[marker.getTitle()] = marker
+      return marker
     }
 
     // Sets the map on all markers in the array.

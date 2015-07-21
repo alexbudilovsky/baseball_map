@@ -95,6 +95,14 @@
 		return game.getElementsByTagName('game')[0].getAttribute('id')
 	}
 
+	function setIconForMarker(marker, icon, homeTeamName, awayTeamName) {
+		homeTeamCode = team_name_to_code[homeTeamName]
+		awayTeamCode = team_name_to_code[awayTeamName]
+		if (whichTeamToShow != "ALL" && whichTeamToShow != homeTeamCode && whichTeamToShow != awayTeamCode) {
+			marker.setIcon(icon)
+		}
+	}
+
 	function addWindowForInProgGame(game) {
 		var teams = game.getElementsByTagName('team')
 
@@ -115,7 +123,7 @@
   			return
   		}
 
-  		cur_marker.setIcon(inProgIcon)
+  		setIconForMarker(cur_marker, inProgIcon, home_team, away_team)
 
   		addInfoWindow(cur_marker, html)
 	}
@@ -138,12 +146,12 @@
 			html = generateHTMLForGameDelay(home_team, away_team, start_time, game.getElementsByTagName("delay_reason")[0].childNodes[0].nodeValue)
 			html += generateMLBUrlForId(game)
 
-			cur_marker.setIcon(delayIcon)
+			setIconForMarker(cur_marker, delayIcon, home_team, away_team)
 		} else {
 			html = generateHTMLForPreGame(home_team, away_team, start_time)
 			html += generateMLBUrlForId(game)
 
-			cur_marker.setIcon(toStartIcon)
+			setIconForMarker(cur_marker, toStartIcon, home_team, away_team)
 		}
 
 
@@ -167,7 +175,7 @@
   			return
   		}
   		
-  		cur_marker.setIcon(overIcon)
+  		setIconForMarker(cur_marker, overIcon, home_team, away_team)
 
   		addInfoWindow(cur_marker, html)
 	}
@@ -234,20 +242,20 @@
 
 			if (cur_marker.getIcon() == overIcon) {
 				if (html.indexOf("In Progress") > -1) {
-					cur_marker.setIcon(doubleHeaderFinalInGame)
+					setIconForMarker(cur_marker, doubleHeaderFinalInGame, home_team, away_team)
 				} else if (html.indexOf("Delayed") > -1) {
-					cur_marker.setIcon(doubleHeaderFinalDelayed)
+					setIconForMarker(cur_marker, doubleHeaderFinalDelayed, home_team, away_team)
 				} else if (html.indexOf("Final") > -1) {
-					cur_marker.setIcon(doubleHeaderOverOver)
+					setIconForMarker(cur_marker, doubleHeaderOverOver, home_team, away_team)
 				} else {
-					cur_marker.setIcon(doubleHeaderFinalAndToPlay)
+					setIconForMarker(cur_marker, doubleHeaderFinalAndToPlay, home_team, away_team)
 				}
 			} else if (cur_marker.getIcon() == inProgIcon) {
-				cur_marker.setIcon(doubleHeaderInProgToPlay)
+				setIconForMarker(cur_marker, doubleHeaderInProgToPlay, home_team, away_team)
 			} else if (cur_marker.getIcon() == delayIcon) {
-				cur_marker.setIcon(doubleHeaderDelayToPlay)
+				setIconForMarker(cur_marker, doubleHeaderDelayToPlay, home_team, away_team)
 			} else {
-				cur_marker.setIcon(futureDoubleHeaderIcon)
+				setIconForMarker(cur_marker, futureDoubleHeaderIcon, home_team, away_team)
 			}
 		} else {
 			var infoWindow = new google.maps.InfoWindow;

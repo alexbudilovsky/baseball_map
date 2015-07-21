@@ -2,19 +2,16 @@
 <html>
   <head>
     <title>2015 Interactive Baseball Schedule Calendar</title>
-  	<link rel="stylesheet" type="text/css" href="baseball_map_style.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="baseball_map_style.css" media="screen" />
     <link rel="shortcut icon" href="images/baseball.ico">
     <style type="text/css">
       html, body, #map-canvas { margin: 0; padding: 0;}
     </style>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?">
-    </script>
-    <script type="text/javascript" src="schedule_arrays.js">
-    </script>
-    <script type="text/javascript" src="jquery-1.11.3.min.js">
-    </script>
-    <script type="text/javascript" src="get_live_scores.js">
-    </script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?"></script>
+    <script type="text/javascript" src="schedule_arrays.js"></script>
+    <script type="text/javascript" src="jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="sliderEvent.js"></script>
+    <script type="text/javascript" src="get_live_scores.js"></script>
     <script type="text/javascript">
         var latLng = new google.maps.LatLng(38.5, -97.35);
         var mapOptions = {
@@ -110,8 +107,6 @@
       }
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
-    <script type="text/javascript" src="sliderEvent.js">
-    </script>
   </head>
   <body onload="setSliderToDayFromURL(); cleanURLQuery();">
   	<h1>MLB Ballparks Hosting Games - <span id="sliderSelectedDate"></span></h1>
@@ -123,7 +118,8 @@
     <button type="button" onClick="moveSliderRight()">&#9658;</button>
 
     <select id="selectTeam" onchange="showTeamOrAll(this.value)">
-      <option value="ALL">Show All Teams</option>
+      <option value="ALL">Show All Team Logos</option>
+      <option value="NONE">Hide Team Logos</option>
     </select>
     <br>
   </div>
