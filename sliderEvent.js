@@ -219,7 +219,7 @@
     }
 
     function getPathToTeamIcon(teamname) {
-        return "team_icons/teamcode_icon.png".replace(/teamcode/, teamname)
+        return "images/team_icons/teamcode_icon.png".replace(/teamcode/, teamname)
     }
 
     function putTeamOnMap(team) {
