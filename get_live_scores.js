@@ -240,6 +240,7 @@
 			var content = home_team_to_infowindow[home_team_code].getContent()
 			home_team_to_infowindow[home_team_code].setContent(content + html)
 
+			/*
 			if (cur_marker.getIcon() == overIcon) {
 				if (html.indexOf("In Progress") > -1) {
 					setIconForMarker(cur_marker, doubleHeaderFinalInGame, home_team, away_team)
@@ -257,6 +258,7 @@
 			} else {
 				setIconForMarker(cur_marker, futureDoubleHeaderIcon, home_team, away_team)
 			}
+			*/
 		} else {
 			var infoWindow = new google.maps.InfoWindow;
 			infoWindow.setContent(html);
