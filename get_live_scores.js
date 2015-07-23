@@ -267,12 +267,14 @@
 	    		if (infoWindow.getMap() == null) {
 	    			infoWindow.open(map,cur_marker)
 	    		}
+	    		cur_marker.setIcon(getLargeIconPath(cur_marker))
 	    	});
 
 	    	google.maps.event.addListener(cur_marker, 'mouseout', function() {
 	    		if (infoWindow.getMap() != null && !cur_marker.clicked) {
 	    			infoWindow.close()
-	    		} 
+	    		}
+	    		cur_marker.setIcon(getSmallIconPath(cur_marker))
 	    	});
 
 	    	google.maps.event.addListener(cur_marker, 'click', function() {
@@ -288,6 +290,18 @@
 		if (home_team_code == 'ASG_NL') { // special All-Start Game case
 			cur_marker.setIcon(allStarGameIcon)
 		}
+	}
 
+	function getSmallIconPath(marker) {
+		var path = marker.getIcon()
 
+		if (path.indexOf("_small") > -1) {
+			return path
+		} else {
+			return path.replace(/_icon\.png/, "_icon_small.png")
+		}
+	}
+
+	function getLargeIconPath(marker) {
+		return marker.getIcon().replace(/_small/, "")
 	}
