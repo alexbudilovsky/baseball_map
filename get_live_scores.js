@@ -353,14 +353,17 @@
     	google.maps.event.addListener(cur_marker, 'mouseout', function() {
     		if (infoWindow.getMap() != null && !cur_marker.clicked) {
     			infoWindow.close()
+    			cur_marker.setIcon(getSmallIconPath(cur_marker))
     		}
-    		cur_marker.setIcon(getSmallIconPath(cur_marker))
     	});
 
     	google.maps.event.addListener(cur_marker, 'click', function() {
     		cur_marker.clicked = !cur_marker.clicked
     		if (!cur_marker.clicked) {
     			infoWindow.close()
+    			cur_marker.setIcon(getSmallIconPath(cur_marker))
+    		} else {
+    			cur_marker.setIcon(getLargeIconPath(cur_marker))
     		}
     	});
 	}
