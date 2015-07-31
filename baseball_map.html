@@ -56,7 +56,7 @@
         controlUI.innerHTML = 'Center Map';
         controlUI.appendChild(goCenterText);
 
-        // Set CSS for the setCenter control border
+        // Set CSS for the goToToday control border
         var todayUI = document.createElement('div');
         todayUI.style.backgroundColor = '#fff';
         todayUI.style.border = '2px solid #fff';
@@ -81,15 +81,46 @@
         todayUI.innerHTML = 'Go To Today';
         todayUI.appendChild(todayText);
 
-          google.maps.event.addDomListener(controlUI, 'click', function() {
-            map.setCenter(latLng)
-            map.setZoom(5)
-          });
+        // Set CSS for the All-Star Game control border
+        var ASGUI = document.createElement('div');
+        ASGUI.style.backgroundColor = '#fff';
+        ASGUI.style.border = '2px solid #fff';
+        ASGUI.style.borderRadius = '3px';
+        ASGUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        ASGUI.style.cursor = 'pointer';
+        ASGUI.style.float = 'left';
+        ASGUI.style.marginBottom = '22px';
+        ASGUI.style.marginLeft = '12px';
+        ASGUI.style.textAlign = 'center';
+        ASGUI.title = 'Click to set the current day to today';
+        controlDiv.appendChild(ASGUI);
 
-          google.maps.event.addDomListener(todayUI, 'click', function() {
-            setSliderToCurrentDay()
-          });
-        }
+        // Set CSS for the control interior
+        var ASGText = document.createElement('div');
+        ASGUI.style.color = 'rgb(25,25,25)';
+        ASGUI.style.fontFamily = 'Roboto,Arial,sans-serif';
+        ASGUI.style.fontSize = '16px';
+        ASGUI.style.lineHeight = '38px';
+        ASGUI.style.paddingLeft = '5px';
+        ASGUI.style.paddingRight = '5px';
+        ASGUI.innerHTML = 'Go To All-Star Game';
+        controlDiv.appendChild(ASGText);
+
+        google.maps.event.addDomListener(controlUI, 'click', function() {
+          map.setCenter(latLng)
+          map.setZoom(5)
+        });
+
+        google.maps.event.addDomListener(todayUI, 'click', function() {
+          setSliderToCurrentDay()
+        });
+
+        google.maps.event.addDomListener(ASGUI, 'click', function() {
+          setSliderToDay(101)
+          loadLiveScoresXMLForSliderDay()
+        });
+
+      }
 
       function initialize() {
 
