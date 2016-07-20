@@ -18,9 +18,15 @@
 
 	function getUrlForDay(baseballDay) {
 		baseballDay = parseInt(baseballDay)
-
     	var month;
-    	var day = baseballDay + 4; 	// four is offset to account for April 5
+    	if (offset == undefined) {
+    		if (parseInt(selectedYear) == 2015) {
+    			offset = 4
+    		} else {
+    			offset = 2
+    		}
+    	}
+    	var day = baseballDay + offset; 	// four is offset to account for April 5
     	if (day <= 30) {
     		month = "04";  		// 26 days inclusive between Apr 5 and 30
     	} else if (day <= 61) {
@@ -49,7 +55,8 @@
     		day = "" + day
     	}
 
-    	var url = "http://gd2.mlb.com/components/game/mlb/year_2015/month_" + month + "/day_" + day + "/scoreboard.xml"
+    	var url = "http://gd2.mlb.com/components/game/mlb/year_" + selectedYear + "/month_" + month + "/day_" + day + "/scoreboard.xml"
+    	console.log(url)
     	return url
 	}
 
@@ -115,7 +122,6 @@
 	var doubleHeaderDelayToPlay = "images/double_header_delay_to_play.png"
 	var doubleHeaderFinalInGame = "images/double_header_final_in_game.png"
 	var doubleHeaderFinalDelayed = "images/double_header_final_delayed.png"
-	var allStarGameIcon = "images/all-star_game.png"
 	function getIconForGamesInfo(gamesInfo) {
 		if (gamesInfo.length > 1) {
 			gameType1 = gamesInfo[0]['gameType'] // first game
@@ -321,10 +327,8 @@
 	function setIconForMarker(marker, icon, homeTeamName, awayTeamName) {
 		homeTeamCode = teamNameToCode(homeTeamName)
 		awayTeamCode = teamNameToCode(awayTeamName)
-
-		if (homeTeamCode == 'ASG_NL') { // special All-Start Game case
-			marker.setIcon(allStarGameIcon)
-		} else if (whichTeamToShow != "ALL" && whichTeamToShow != homeTeamCode && whichTeamToShow != awayTeamCode) {
+		
+		if (whichTeamToShow != "ALL" && whichTeamToShow != homeTeamCode && whichTeamToShow != awayTeamCode) {
 			marker.setIcon(icon)
 		}
 	}

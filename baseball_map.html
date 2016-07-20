@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>2015 Interactive Baseball Schedule Calendar</title>
+    <title>Interactive Baseball Schedule Calendar</title>
     <link rel="stylesheet" type="text/css" href="baseball_map_style.css" media="screen" />
     <link rel="shortcut icon" href="images/baseball.ico">
     <style type="text/css">
@@ -152,7 +152,10 @@
       <option value="ALL">Show All Team Logos</option>
       <option value="NONE">Hide Team Logos</option>
     </select>
-    <a href ="2016/baseball_map_2016.html">2016</a>
+    <select id="selectYear" onchange="changeYear(this.value)">
+      <option value="2015">2015</option>
+      <option value="2016" selected>2016</option>
+    </select>
     <br>
   </div>
   <div id="container">
@@ -165,6 +168,7 @@
 	<br>
 
   <script type="text/javascript">
+      var selectedYear = document.getElementById('selectYear').value
       var select = document.getElementById("selectTeam");
       var sortedTeamNames = [];
       for(var key in team_name_to_code) {

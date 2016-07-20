@@ -1,4 +1,6 @@
     var whichTeamToShow = "ALL"
+    var selectedYear
+    var offset
 
     // add proototype for day of year
     Date.prototype.getDOY = function() {
@@ -23,6 +25,7 @@
 
         clean_uri += "?baseball_day=" + document.getElementById("calendarDaySlider").value
         clean_uri += "&team_to_show=" + selectObj.value
+        clean_uri += "&selected_year=" + document.getElementById("selectYear").value
 
         prompt("Copy to clipboard: Ctrl+C, Enter", clean_uri);
     }
@@ -48,6 +51,7 @@
     function setSliderToDayFromURL() {
         var baseball_day = getURLParameter('baseball_day')
         var team_to_show = getURLParameter('team_to_show')
+        var sYear = getURLParameter('selected_year')
 
         if (team_to_show != undefined && team_to_show != null) {
             if (!(team_to_show.toUpperCase() in team_to_loc)  && team_to_show != "NONE") {
@@ -59,14 +63,22 @@
             setDropDownToTeamCode()
         }
 
+        if (sYear != undefined && sYear != null) {
+            selectedYear = parseInt(sYear)
+            if (selectedYear == 2015 || selectedYear == 2016) {
+                document.getElementById("selectYear").value = selectedYear
+            }
+        }
+
         if (baseball_day != undefined && baseball_day != null) {
-            baseball_day = parseInt(baseball_day)
+            baseballDay = parseInt(baseball_day)
             if (baseball_day >= 1 && baseball_day <= 188) {
-                setSliderToDay(baseball_day)
-                loadLiveScoresXMLForSliderDay()
+                document.getElementById("calendarDaySlider").value = baseballDay;
+                showTeamOrAll(whichTeamToShow)
+                document.getElementById("sliderSelectedDate").innerHTML = slideAmtToDate(baseballDay);
                 return
             }
-        } 
+        }
 
         setSliderToCurrentDay()
     }
@@ -116,7 +128,13 @@
     	slideAmount = parseInt(slideAmount)
 
     	var month;
-    	var day = slideAmount + 4; 	// four is offset to account for April 5
+        if (parseInt(selectedYear) == 2015) {
+            offset = 4
+        } else {
+            offset = 2
+        }
+
+    	var day = slideAmount + offset; 	// four is offset to account for April 5
     	if (day <= 30) {
     		month = "Apr";  		// 26 days inclusive between Apr 5 and 30
     	} else if (day <= 61) {
@@ -139,10 +157,10 @@
     		day -= 183 ;
     	}
 
-    	return dayOfMLBYearToDayOfWeek(slideAmount) + ", " + month +  " " + day + ", 2015";
+    	return dayOfMLBYearToDayOfWeek(slideAmount) + ", " + month +  " " + day + ", " + selectedYear;
     }
 
-    // day1 = Sunday (April 5, 2015)
+    // day1 = Sunday (April 5, 2015), Sunday (April 3, 2016)
     function dayOfMLBYearToDayOfWeek(day_id) {
         var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
@@ -153,7 +171,12 @@
 
     // returns number 1-183, or beginning/end if outside of year
     function getCurrentDayOfBaseballYear() {
-        var baseballDayOfYear = new Date().getDOY() - 95; //94 - April 4th (need to subtract offset)
+        if (parseInt(selectedYear) == 2015) {
+            var baseballDayOfYear = new Date().getDOY() - 95; //94 - April 4th (need to subtract offset)
+        } else {
+            var baseballDayOfYear = new Date().getDOY() - 93; //94 - April 4th (need to subtract offset)
+        }
+        
         if (baseballDayOfYear < 1) {
             return 1;
         } else if (baseballDayOfYear > 188) {
@@ -171,6 +194,17 @@
         loadLiveScoresXMLForSliderDay()
     }
 
+    function changeYear(selection) {
+        selectedYear = selection
+        if (parseInt(selectedYear) == 2015) {
+            setSliderToDay(parseInt(document.getElementById('calendarDaySlider').value) - 2)
+        } else {
+            setSliderToDay(parseInt(document.getElementById('calendarDaySlider').value) + 2)
+        }
+
+        showTeamOrAll(whichTeamToShow)
+    }
+
     ////////////////////////////////
     // Google Map Functions Below //
     ////////////////////////////////
@@ -181,7 +215,11 @@
     show_for_day = 1
     function showLocations(day_id) {
         show_for_day = day_id
-        var teams = day_id_to_games[day_id]
+        if (parseInt(selectedYear) == 2015) {
+            var teams = day_id_to_games_2015[day_id]
+        } else {
+            var teams = day_id_to_games_2016[day_id]            
+        }
         
         deleteMarkers()
         
@@ -206,9 +244,7 @@
             }
             marker.setIcon(path)
         } else {
-            if (show_for_day == 101) {
-              marker.setIcon(allStarGameIcon)
-            } else if (show_for_day < currentBaseballDay) {
+            if (show_for_day < currentBaseballDay) {
               marker.setIcon(overIcon)
             } else {
               marker.setIcon(toStartIcon)
