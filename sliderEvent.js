@@ -65,7 +65,7 @@
 
         if (sYear != undefined && sYear != null) {
             selectedYear = parseInt(sYear)
-            if (selectedYear == 2015 || selectedYear == 2016) {
+            if (selectedYear == 2015 || selectedYear == 2016 || selectedYear == 2017) {
                 document.getElementById("selectYear").value = selectedYear
             }
         }
@@ -130,8 +130,10 @@
     	var month;
         if (parseInt(selectedYear) == 2015) {
             offset = 4
-        } else {
+        } else if (parseInt(selectedYear) == 2016) {
             offset = 2
+        } else if (parseInt(selectedYear) == 2017) {
+            offset = 1
         }
 
     	var day = slideAmount + offset; 	// four is offset to account for April 5
@@ -173,8 +175,10 @@
     function getCurrentDayOfBaseballYear() {
         if (parseInt(selectedYear) == 2015) {
             var baseballDayOfYear = new Date().getDOY() - 95; //94 - April 4th (need to subtract offset)
+        } else if (parseInt(selectedYear) == 2016) {
+            var baseballDayOfYear = new Date().getDOY() - 93; //94 - April 3th (need to subtract offset)
         } else {
-            var baseballDayOfYear = new Date().getDOY() - 93; //94 - April 4th (need to subtract offset)
+            var baseballDayOfYear = new Date().getDOY() - 91; //94 - April 2th (need to subtract offset)
         }
         
         if (baseballDayOfYear < 1) {
@@ -198,9 +202,11 @@
         selectedYear = selection
         if (parseInt(selectedYear) == 2015) {
             setSliderToDay(parseInt(document.getElementById('calendarDaySlider').value) - 2)
-        } else {
+        } else if (parseInt(selectedYear) == 2016) {
             setSliderToDay(parseInt(document.getElementById('calendarDaySlider').value) + 2)
-        }
+        } else if (parseInt(selectedYear) == 2017) {
+            setSliderToDay(parseInt(document.getElementById('calendarDaySlider').value))
+        } 
 
         showTeamOrAll(whichTeamToShow)
     }
@@ -215,10 +221,13 @@
     show_for_day = 1
     function showLocations(day_id) {
         show_for_day = day_id
-        if (parseInt(selectedYear) == 2015) {
+        yr = parseInt(selectedYear)
+        if (yr == 2015) {
             var teams = day_id_to_games_2015[day_id]
-        } else {
+        } else if (yr == 2016) {
             var teams = day_id_to_games_2016[day_id]            
+        } else if (yr == 2017) {
+            var teams = day_id_to_games_2017[day_id]
         }
         
         deleteMarkers()

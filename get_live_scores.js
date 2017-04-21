@@ -22,9 +22,11 @@
     	if (offset == undefined) {
     		if (parseInt(selectedYear) == 2015) {
     			offset = 4
-    		} else {
+    		} else if (parseInt(selectedYear) == 2016) {
     			offset = 2
-    		}
+    		} else if (parseInt(selectedYear) == 2017) {
+    			offset = 1
+    		} 
     	}
     	var day = baseballDay + offset; 	// four is offset to account for April 5
     	if (day <= 30) {
